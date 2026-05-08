@@ -2,40 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Employee Form</title>
+    <title>Thông tin nhân viên</title>
 </head>
 <body>
-<div style="width: 400px; margin: 50px auto; border: 1px solid black; padding: 20px;">
-    <h3 style="text-align: center;">ADD/EDIT EMPLOYEE</h3>
 
-    <form th:action="@{/employee/save}" th:object="${employee}" method="post" enctype="multipart/form-data">
-        <div>
-            <label>ID:</label><br>
-            <input type="text" th:field="*{id}" placeholder="Nhập id ...">
+<div th:replace="~{header :: header}"></div>
+
+<div style="width: 50%; margin: 20px auto; border: 1px solid #ccc; padding: 20px;">
+    <h2>Form Nhân Viên</h2>
+
+    <div th:replace="~{validation :: notification}"></div>
+
+    <form th:action="@{/employee/save}" method="post" th:object="${employee}" enctype="multipart/form-data">
+
+        <input type="hidden" th:field="*{id}" />
+
+        <div style="margin-bottom: 15px;">
+            <label>Tên nhân viên:</label><br/>
+            <input type="text" th:field="*{name}" style="width: 100%; padding: 8px;"/>
         </div>
-        <div>
-            <label>FullName:</label><br>
-            <input type="text" th:field="*{fullName}" placeholder="Nhập fullName ...">
-            <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" style="color: red;"></p>
+
+        <div style="margin-bottom: 15px;">
+            <label>Email:</label><br/>
+            <input type="email" th:field="*{email}" style="width: 100%; padding: 8px;"/>
         </div>
-        <div>
-            <label>Position:</label><br>
-            <input type="text" th:field="*{position}" placeholder="Nhập position ...">
-            <p th:if="${#fields.hasErrors('position')}" th:errors="*{position}" style="color: red;"></p>
+
+        <div style="margin-bottom: 15px;">
+            <label>Ảnh đại diện (Avatar):</label><br/>
+            <input type="file" name="file" />
+
+            <div th:if="${employee.avatar != null}">
+                <p>Ảnh hiện tại:</p>
+                <img th:src="@{'/uploads/' + ${employee.avatar}}" width="100"/>
+            </div>
         </div>
-        <div>
-            <label>Salary:</label><br>
-            <input type="number" step="0.01" th:field="*{salary}" placeholder="Nhập salary ...">
-            <p th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}" style="color: red;"></p>
-        </div>
-        <div>
-            <label>Avatar:</label><br>
-            <input type="file" name="file">
-        </div>
-        <br>
-        <button type="submit" style="width: 100%; background-color: #d1e7dd;">Submit</button>
+
+        <button type="submit" style="padding: 10px 20px; background: blue; color: white; cursor: pointer;">
+            Lưu Thông Tin
+        </button>
+        <a th:href="@{/employee}">Hủy</a>
     </form>
 </div>
-<div th:replace="~{fragments/validation :: notification}"></div>
+
+<div th:replace="~{footer :: footer}"></div>
+
 </body>
 </html>

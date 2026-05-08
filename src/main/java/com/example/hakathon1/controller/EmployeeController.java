@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,31 +48,38 @@ public class EmployeeController {
     public String save(@Valid @ModelAttribute("employee") Employee employee,
                        BindingResult bindingResult,
                        Model model,
-                       @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+                       @RequestParam(value = "file", required = false) MultipartFile file) {
 
         if (bindingResult.hasErrors()) {
             return "form";
         }
 
-        if (file != null && !file.isEmpty()) {
-            File uploadDir = new File(UPLOAD_PATH);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
+        try {
+            if (file != null && !file.isEmpty()) {
+                File uploadDir = new File(UPLOAD_PATH);
+                if (!uploadDir.exists()) uploadDir.mkdirs();
 
-            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path path = Paths.get(UPLOAD_PATH + fileName);
-            Files.copy(file.getInputStream(), path);
+                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                Path path = Paths.get(UPLOAD_PATH + fileName);
+                Files.copy(file.getInputStream(), path);
 
-            employee.setAvatar(fileName);
-        } else {
-            if (employee.getId() != null && !employee.getId().isEmpty()) {
-                Employee old = employeeService.getById(employee.getId());
-                if (old != null) {
-                    employee.setAvatar(old.getAvatar());
+                employee.setAvatar(fileName);
+            } else {
+                if (employee.getId() != null && !employee.getId().isEmpty()) {
+                    Employee old = employeeService.getById(employee.getId());
+                    if (old != null) {
+                        employee.setAvatar(old.getAvatar());
+                    }
                 }
             }
-        }
 
-        employeeService.save(employee);
+            employeeService.save(employee);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Lỗi lưu file: " + e.getMessage());
+            return "form";
+        }
 
         return "redirect:/employee";
     }
