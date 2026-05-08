@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+        <form th:action="@{/employees}" method="get">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="Search by name or position..." />
+            <button type="submit">Search</button>
+        </form>
+        <a th:href="@{/employees/add}"><button>Add</button></a>
+    </div>
+
+    <table th:if="${not #lists.isEmpty(employees)}">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>ID</th>
+            <th>FullName</th>
+            <th>Position</th>
+            <th>Salary</th>
+            <th>Avatar</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp, stat : ${employees}">
+            <td th:text="${stat.count}">1</td>
+            <td th:text="${emp.id}">NV001</td>
+            <td th:text="${emp.fullName}">Nguyen Van A</td>
+            <td th:text="${emp.position}">Fresher</td>
+            <td th:text="${#numbers.formatDecimal(emp.salary, 0, 'COMMA', 0, 'POINT')}">1,000,000</td>
+            <td>
+                <img th:if="${emp.avatar != null}" th:src="@{'/resources/uploads/' + ${emp.avatar}}" class="avatar-thumb" alt="Avatar"/>
+                <img th:unless="${emp.avatar != null}" src="https://via.placeholder.com/50" class="avatar-thumb" alt="Placeholder"/>
+            </td>
+            <td>
+                <a th:href="@{/employees/edit/{id}(id=${emp.id})}">Sửa</a> | <a th:href="@{/employees/delete/{id}(id=${emp.id})}"
+                                                                                onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này không?');">Xoá</a> </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(employees)}" style="text-align: center; margin-top: 20px; color: gray;">
+        <i>Hiện chưa có nhân sự nào trong hệ thống</i>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

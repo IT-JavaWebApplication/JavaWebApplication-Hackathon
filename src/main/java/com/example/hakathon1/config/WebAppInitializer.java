@@ -4,7 +4,7 @@ import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -13,7 +13,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{WebConfig.class};
+        return new Class[]{AppConfig.class};
     }
 
     @Override
@@ -23,12 +23,6 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
-        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
-                null,
-                10485760,
-                20971520,
-                0
-        );
-        registration.setMultipartConfig(multipartConfigElement);
+        registration.setMultipartConfig(new MultipartConfigElement("", 5242880, 5242880, 0));
     }
 }
