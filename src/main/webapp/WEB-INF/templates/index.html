@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Management</title>
+</head>
+<body>
+<div th:replace="~{fragment/header :: header}"></div>
+
+
+<div style="margin: 20px 0; display: flex; justify-content: space-between;">
+    <form th:action="@{/employee}" method="get">
+        <input type="text" name="search" placeholder="Search ...">
+        <button type="submit">search</button>
+    </form>
+    <a th:href="@{/employee/add}"><button>Add</button></a>
+</div>
+
+<table border="1" style="width: 100%; border-collapse: collapse; text-align: center;">
+    <thead>
+    <tr>
+        <th>STT</th>
+        <th>FullName</th>
+        <th>Position</th>
+        <th>Salary</th>
+        <th>Avatar</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(employees)}">
+        <td colspan="6">Hiện chưa có nhân sự nào trong hệ thống</td>
+    </tr>
+    <tr th:each="emp, state : ${employees}">
+        <td th:text="${state.count}"></td>
+        <td th:text="${emp.fullName}"></td>
+        <td th:text="${emp.position}"></td>
+        <td th:text="${#numbers.formatDecimal(emp.salary, 1, 'POINT', 0, 'COMMA')}"></td>
+        <td>
+            <img th:src="${emp.avatar != null ? '/uploads/' + emp.avatar : 'https://via.placeholder.com/50'}"
+                 width="50" height="50" style="border-radius: 50%;">
+        </td>
+        <td>
+            <a th:href="@{/employee/edit/{id}(id=${emp.id})}">Sửa</a> |
+            <a th:href="@{/employee/delete/{id}(id=${emp.id})}"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xoá</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div th:replace="~{fragment/footer :: footer}"></div>
+</body>
+</html>

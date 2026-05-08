@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Form</title>
+</head>
+<body>
+<div style="width: 400px; margin: 50px auto; border: 1px solid black; padding: 20px;">
+    <h3 style="text-align: center;">ADD/EDIT EMPLOYEE</h3>
+
+    <form th:action="@{/employee/save}" th:object="${employee}" method="post" enctype="multipart/form-data">
+        <div>
+            <label>ID:</label><br>
+            <input type="text" th:field="*{id}" placeholder="Nhập id ...">
+        </div>
+        <div>
+            <label>FullName:</label><br>
+            <input type="text" th:field="*{fullName}" placeholder="Nhập fullName ...">
+            <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" style="color: red;"></p>
+        </div>
+        <div>
+            <label>Position:</label><br>
+            <input type="text" th:field="*{position}" placeholder="Nhập position ...">
+            <p th:if="${#fields.hasErrors('position')}" th:errors="*{position}" style="color: red;"></p>
+        </div>
+        <div>
+            <label>Salary:</label><br>
+            <input type="number" step="0.01" th:field="*{salary}" placeholder="Nhập salary ...">
+            <p th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}" style="color: red;"></p>
+        </div>
+        <div>
+            <label>Avatar:</label><br>
+            <input type="file" name="file">
+        </div>
+        <br>
+        <button type="submit" style="width: 100%; background-color: #d1e7dd;">Submit</button>
+    </form>
+</div>
+<div th:replace="~{fragments/validation :: notification}"></div>
+</body>
+</html>
